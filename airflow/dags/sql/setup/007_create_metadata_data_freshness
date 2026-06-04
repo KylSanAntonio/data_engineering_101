@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS metadata.data_freshness (
+    dataset_name TEXT PRIMARY KEY,
+    last_watermark BIGINT,
+    updated_at TIMESTAMP DEFAULT NOW()
+);

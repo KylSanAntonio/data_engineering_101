@@ -1,23 +1,20 @@
-INSERT INTO staging.sales_clean
+INSERT INTO raw.sales_raw
 (
     id,
     product,
     amount,
-    amount_with_tax,
     created_at
 )
 SELECT
     id,
-    LOWER(TRIM(product)),
+    product,
     amount,
-    amount * 1.12,
     created_at
-FROM raw.sales_raw
+FROM public.sales_raw
 WHERE id > %s
 ON CONFLICT (id)
 DO UPDATE
 SET
     product = EXCLUDED.product,
     amount = EXCLUDED.amount,
-    amount_with_tax = EXCLUDED.amount_with_tax,
     created_at = EXCLUDED.created_at;

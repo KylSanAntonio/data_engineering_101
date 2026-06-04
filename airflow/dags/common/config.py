@@ -1,0 +1,2 @@
+DAG_VERSION = "1.0.11"
+PIPELINE_NAME = "sales_etl"

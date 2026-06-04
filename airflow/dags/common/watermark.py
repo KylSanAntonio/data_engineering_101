@@ -1,11 +1,6 @@
+from common.config import PIPELINE_NAME
 from common.postgres import get_conn
 
-PIPELINE_NAME = "sales_etl"
-
-
-# --------------------------------------------------
-# GET WATERMARK
-# --------------------------------------------------
 def get_watermark():
 
     conn = get_conn()
@@ -21,7 +16,6 @@ def get_watermark():
 
         row = cur.fetchone()
 
-        # If no record exists, initialize it
         if not row:
             cur.execute("""
                 INSERT INTO metadata.watermark
@@ -39,9 +33,6 @@ def get_watermark():
         conn.close()
 
 
-# --------------------------------------------------
-# UPDATE WATERMARK
-# --------------------------------------------------
 def update_watermark(last_id):
 
     conn = get_conn()
@@ -56,6 +47,29 @@ def update_watermark(last_id):
                 updated_at = NOW()
             WHERE pipeline_name = %s
         """, (last_id, PIPELINE_NAME))
+
+        conn.commit()
+
+    finally:
+        conn.close()
+
+
+def update_freshness(dataset_name, watermark):
+
+    conn = get_conn()
+
+    try:
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO metadata.data_freshness
+            (dataset_name, last_watermark, updated_at)
+            VALUES (%s, %s, NOW())
+            ON CONFLICT (dataset_name)
+            DO UPDATE SET
+                last_watermark = EXCLUDED.last_watermark,
+                updated_at = NOW()
+        """, (dataset_name, watermark))
 
         conn.commit()
 
