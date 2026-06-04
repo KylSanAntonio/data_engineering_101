@@ -1,4 +1,4 @@
-from common.postgres import get_conn
+from common.db import get_postgres_conn
 
 
 def log_run(
@@ -8,7 +8,7 @@ def log_run(
         rows_processed=0,
         error_message=None):
 
-    conn = get_conn()
+    conn = get_postgres_conn()
     cur = conn.cursor()
 
     cur.execute("""

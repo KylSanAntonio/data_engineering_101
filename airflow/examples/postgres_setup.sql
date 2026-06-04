@@ -10,6 +10,13 @@
 -- ('mouse', 50),
 -- ('keyboard', 80);
 
+-- INSERT INTO raw.sales_raw
+-- VALUES
+-- (1,'Laptop',1000,NOW()),
+-- (2,'Mouse',50,NOW()),
+-- (3,'Keyboard',100,NOW())
+-- ON CONFLICT DO NOTHING;
+
 
 -- CREATE SCHEMA IF NOT EXISTS raw;
 -- CREATE SCHEMA IF NOT EXISTS staging;
@@ -83,3 +90,28 @@
 -- UPDATE metadata.watermark
 -- SET updated_at = NOW()
 -- WHERE updated_at IS NULL;
+
+
+
+-- -- FOR TESTING
+-- TRUNCATE audit.etl_run_log;
+-- TRUNCATE metadata.watermark;
+-- TRUNCATE metadata.dag_run_audit;
+-- TRUNCATE metadata.data_freshness;
+-- TRUNCATE metadata.task_metrics;
+-- TRUNCATE raw.sales_raw;
+-- TRUNCATE raw.etl_control;
+-- TRUNCATE raw.etl_log;
+-- TRUNCATE staging.sales_clean;
+-- TRUNCATE warehouse.sales_summary;
+
+-- SELECT * FROM audit.etl_run_log; -- NO RESULT
+-- SELECT * FROM metadata.watermark;
+-- SELECT * FROM metadata.dag_run_audit;
+-- SELECT * FROM metadata.data_freshness;
+-- SELECT * FROM metadata.task_metrics;
+-- SELECT * FROM raw.sales_raw;
+-- SELECT * FROM raw.etl_control; -- NO RESULT
+-- SELECT * FROM raw.etl_log; -- NO RESULT
+-- SELECT * FROM staging.sales_clean;
+-- SELECT * FROM warehouse.sales_summary;

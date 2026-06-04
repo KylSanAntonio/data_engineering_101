@@ -1,9 +1,9 @@
 from common.config import PIPELINE_NAME
-from common.postgres import get_conn
+from common.db import get_postgres_conn
 
 def get_watermark():
 
-    conn = get_conn()
+    conn = get_postgres_conn()
 
     try:
         cur = conn.cursor()
@@ -35,7 +35,7 @@ def get_watermark():
 
 def update_watermark(last_id):
 
-    conn = get_conn()
+    conn = get_postgres_conn()
 
     try:
         cur = conn.cursor()
@@ -56,7 +56,7 @@ def update_watermark(last_id):
 
 def update_freshness(dataset_name, watermark):
 
-    conn = get_conn()
+    conn = get_postgres_conn()
 
     try:
         cur = conn.cursor()

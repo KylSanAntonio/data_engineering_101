@@ -4,7 +4,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import logging
 
-from common.postgres import get_conn
+from common.db import get_postgres_conn, get_mysql_conn
 from common.watermark import get_watermark, update_watermark, update_freshness
 from common.sql_loader import load_sql, execute_sql
 from common.observability import log_dag_start, log_dag_end, track_task
@@ -23,7 +23,7 @@ def extract_raw(**context):
     logger.info("Starting extraction from public → raw")
     logger.info("Extracting raw data. watermark=%s", watermark)
 
-    conn = get_conn()
+    conn = get_postgres_conn()
 
     try:
         cur = conn.cursor()
@@ -55,7 +55,7 @@ def run_staging(**context):
 
     logger.info("Starting staging load. Watermark=%s", watermark)
 
-    conn = get_conn()
+    conn = get_postgres_conn()
 
     try:
         cur = conn.cursor()
@@ -83,7 +83,7 @@ def run_staging(**context):
 @track_task("quality_check")
 def quality_check(**context):
 
-    conn = get_conn()
+    conn = get_postgres_conn()
 
     try:
         cur = conn.cursor()
@@ -109,7 +109,7 @@ def quality_check(**context):
 @track_task("run_warehouse")
 def run_warehouse(**context):
 
-    conn = get_conn()
+    conn = get_postgres_conn()
 
     try:
         cur = conn.cursor()
@@ -137,7 +137,7 @@ def run_warehouse(**context):
 @track_task("update_watermark")
 def save_watermark(**context):
 
-    conn = get_conn()
+    conn = get_postgres_conn()
 
     try:
         cur = conn.cursor()
