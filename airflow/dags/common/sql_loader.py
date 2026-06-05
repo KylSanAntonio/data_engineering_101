@@ -46,3 +46,15 @@ def execute_sql(cur, sql: str, params=None):
         return cur.execute(sql)
 
     return cur.execute(sql, params)
+
+
+# --------------------------------------------------
+# FETCH SQL RESULTS
+# --------------------------------------------------
+def fetch_sql(cur, sql: str, params=None):
+
+    validate_sql(sql, params)
+
+    cur.execute(sql, params)
+
+    return cur.fetchall()
