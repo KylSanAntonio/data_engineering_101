@@ -1,7 +1,8 @@
 from common.config import DAG_VERSION
 import time
 from airflow.operators.python import get_current_context
-from common.db import get_postgres_conn
+from common.db import get_connection
+from common.config import PLATFORM_CONN_ID
 
 # --------------------------
 # DAG START
@@ -10,7 +11,7 @@ def log_dag_start():
 
     context = get_current_context()
 
-    conn = get_postgres_conn()
+    conn = get_connection(PLATFORM_CONN_ID)
     cur = conn.cursor()
 
     cur.execute("""
@@ -37,7 +38,7 @@ def log_dag_end():
 
     context = get_current_context()
 
-    conn = get_postgres_conn()
+    conn = get_connection(PLATFORM_CONN_ID)
     cur = conn.cursor()
 
     cur.execute("""
@@ -67,7 +68,7 @@ def track_task(task_name):
             context = get_current_context()
             start = time.time()
 
-            conn = get_postgres_conn()
+            conn = get_connection(PLATFORM_CONN_ID)
             cur = conn.cursor()
 
             try:

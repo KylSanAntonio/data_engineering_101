@@ -1,4 +1,4 @@
-INSERT INTO warehouse.sales_summary
+INSERT INTO gold.sales_summary
 (
     product,
     total_sales,
@@ -8,7 +8,7 @@ SELECT
     product,
     SUM(amount_with_tax),
     COUNT(*)
-FROM staging.sales_clean
+FROM silver.sales_orders
 GROUP BY product
 ON CONFLICT (product)
 DO UPDATE

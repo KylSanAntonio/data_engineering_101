@@ -9,7 +9,13 @@ SQL_DIR = Path("/opt/airflow/dags/sql")
 # LOAD SQL FILE
 # --------------------------------------------------
 def load_sql(filename: str) -> str:
+
     path = SQL_DIR / filename
+
+    if not path.exists():
+
+        raise FileNotFoundError(path)
+
     return path.read_text()
 
 

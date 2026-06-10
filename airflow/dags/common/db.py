@@ -1,15 +1,21 @@
+from airflow.hooks.base import BaseHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.providers.mysql.hooks.mysql import MySqlHook
 
-POSTGRES_CONN_ID = "warehouse_postgres"
-MYSQL_CONN_ID = "source_mysql"
+def get_connection(conn_id: str):
 
-def get_postgres_conn():
-    return PostgresHook(
-        postgres_conn_id=POSTGRES_CONN_ID
-    ).get_conn()
+    conn = BaseHook.get_connection(conn_id)
 
-def get_mysql_conn():
-    return MySqlHook(
-        mysql_conn_id=MYSQL_CONN_ID
-    ).get_conn()
+    if conn.conn_type == "postgres":
+        return PostgresHook(
+            postgres_conn_id=conn_id
+        ).get_conn()
+
+    if conn.conn_type == "mysql":
+        return MySqlHook(
+            mysql_conn_id=conn_id
+        ).get_conn()
+
+    raise ValueError(
+        f"Unsupported connection type: {conn.conn_type}"
+    )

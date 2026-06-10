@@ -1,77 +1,86 @@
-from common.config import PIPELINE_NAME
-from common.db import get_postgres_conn
+from common.db import get_connection
+from common.config import PLATFORM_CONN_ID
 
-def get_watermark():
+def get_watermark(pipeline_name):
 
-    conn = get_postgres_conn()
+    conn = get_connection(PLATFORM_CONN_ID)
 
     try:
+
         cur = conn.cursor()
 
         cur.execute("""
             SELECT last_processed_id
             FROM metadata.watermark
             WHERE pipeline_name = %s
-        """, (PIPELINE_NAME,))
+        """, (pipeline_name,))
 
         row = cur.fetchone()
 
-        if not row:
-            cur.execute("""
-                INSERT INTO metadata.watermark
-                (pipeline_name, last_processed_id)
-                VALUES (%s, 0)
-            """, (PIPELINE_NAME,))
+        if row:
+            return row[0]
 
-            conn.commit()
+        cur.execute("""
+            INSERT INTO metadata.watermark
+            (
+                pipeline_name,
+                last_processed_id,
+                updated_at
+            )
+            VALUES
+            (
+                %s,
+                0,
+                NOW()
+            )
+        """, (pipeline_name,))
 
-            return 0
+        conn.commit()
 
-        return row[0]
+        return 0
 
     finally:
+
         conn.close()
 
 
-def update_watermark(last_id):
+def update_watermark(
+    pipeline_name,
+    last_id
+):
 
-    conn = get_postgres_conn()
+    conn = get_connection(PLATFORM_CONN_ID)
 
     try:
+
         cur = conn.cursor()
 
         cur.execute("""
-            UPDATE metadata.watermark
+            INSERT INTO metadata.watermark
+            (
+                pipeline_name,
+                last_processed_id,
+                updated_at
+            )
+            VALUES
+            (
+                %s,
+                %s,
+                NOW()
+            )
+            ON CONFLICT (pipeline_name)
+            DO UPDATE
             SET
-                last_processed_id = %s,
+                last_processed_id = EXCLUDED.last_processed_id,
                 updated_at = NOW()
-            WHERE pipeline_name = %s
-        """, (last_id, PIPELINE_NAME))
+        """,
+        (
+            pipeline_name,
+            last_id
+        ))
 
         conn.commit()
 
     finally:
-        conn.close()
 
-
-def update_freshness(dataset_name, watermark):
-
-    conn = get_postgres_conn()
-
-    try:
-        cur = conn.cursor()
-
-        cur.execute("""
-            INSERT INTO metadata.data_freshness
-            (dataset_name, last_watermark, updated_at)
-            VALUES (%s, %s, NOW())
-            ON CONFLICT (dataset_name)
-            DO UPDATE SET
-                last_watermark = EXCLUDED.last_watermark,
-                updated_at = NOW()
-        """, (dataset_name, watermark))
-
-        conn.commit()
-
-    finally:
         conn.close()

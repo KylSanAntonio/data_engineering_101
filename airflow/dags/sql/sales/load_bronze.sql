@@ -1,4 +1,4 @@
-INSERT INTO raw.sales_raw
+INSERT INTO bronze.sales_orders
 (
     id,
     product,

@@ -1,3 +1,3 @@
 SELECT COUNT(*)
-FROM staging.sales_clean
+FROM silver.sales_orders
 WHERE id IS NULL;
