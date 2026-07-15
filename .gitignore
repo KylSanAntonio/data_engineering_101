@@ -5,3 +5,17 @@ open_de_project
 airflow/.env
 airflow/logs
 airflow/logs/*
+
+scripts/CAF/matching result checker/csv_files
+scripts/CAF/matching result checker/csv_files/*
+
+scripts/CAF/get distinct provinces for each db/*.csv
+
+scripts/CAF/get distinct provinces on the csv/*.csv
+
+scripts/CAF/data matching of CAF and DA-RCEF PSGC/*.csv
+
+scripts/CAF/CSV integrity checker/*.csv
+
+scripts/CAF/data matching of CAF and DA-RCEF PSGC/v1 separate file for matching status/*.csv
+scripts/CAF/data matching of CAF and DA-RCEF PSGC/v2/*.csv

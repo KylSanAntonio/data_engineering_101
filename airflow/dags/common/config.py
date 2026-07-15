@@ -11,13 +11,15 @@ PIPELINES = {
         "source_conn": "sales_mysql",
         "target_conn": "sales_warehouse_postgres",
         "watermark_key": "sales_etl",
-        "sql_path": "sales"
+        "sql_path": "sales",
+        "dag_id": "sales"
     },
 
     "caf": {
         "source_conn": "caf_mysql",
         "target_conn": "caf_warehouse_postgres",
         "watermark_key": "caf_etl",
-        "sql_path": "caf"
+        "sql_path": "caf",
+        "dag_id": "caf"
     }
 }
